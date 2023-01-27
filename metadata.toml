@@ -1,0 +1,4 @@
+name = "dust shards"
+version = "0.0.1"
+author = "tewlwolow"
+description = "barebones language parser for Morrowind's native dialects"

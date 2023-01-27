@@ -1,0 +1,19 @@
+name = "Ald Dunmeri"
+
+description = """
+Old Dunmeri is based on the divergent elven dialect of the Chimer, dating from the Merethic Era. Examples of Ald'Dunmeri are most prevalent in Ashlander forenames and surnames, old settlements, landmarks (such as caves, grottos, and traditional region names), and daedric shrines. Daedric influence on the Chimeri language is an accepted fact by natives and scholars alike. Records indicate that Boethiah claims to have taught the early elven dissidents the fundamentals of language, among other societal uniquities. To this day, the Dunmeri people prefer to use Daedric script rather than common Tamriellic characters in their writing. Ancient examples of writing from the time of the Chimer suggest that the Daedric alphabet was used exclusively.
+"""
+
+history = """
+The language underwent several stages of development, influenced both by the (semi)nomadic way of life of the Velothi migrants, as well as other languages it came in contact with. Its basis constits of radicals, or word stems, which carry fundamental meaning. These basic notions are further modified by inserting vowels and other modal elements. Thus, Ald-Dunmeri words are composed of a root (originally a noun), and adorned with a variety of prefixes, suffixes and transfixes to apply a certain modality to the underlying stem. In larger clusters, we can observe a certain tendency towards vocal harmony, so that the modalities can take on a different form, depending on the phonological context of the phrase.
+
+The prime example of the earliest Velothi-specific features are Daedric names. They are usually represented as one, long grapheme, in which all the meaningful parts are conjoined with harmonised vowels. However, as Chimer settled in Resdayn and the language developed, certain parts underwent grammaticalisation, where modal morphemes slowly solidified into separate words. Initially, this was due to phonological changes, where vowels became gradually reduced to the level of glottal stops and semi-vowels. It is also represented in writing, so the earliest notion of 'old home' would be 'ald(V)ruhn' (V denoting an unknown vowel, most probably 'u'), then 'ald'ruhn', and if the word wasn't frozen at this stage due to its usage as a proper noun, we could expect and 'ald-ruhn' and then 'ald ruhn'. Thus we went from a two-root cluster with vocal harmony to two parts separated by a glottal stop, which also subsequently diminished, to a point that would essentialy be considered two separate entities.
+
+This was most probably due to a profound cultural impact of the Dwemers, whose civilisation grew in a different geographical setting. As with most languages, the initial batch of sounds, which in time formed into phonemes, was simply an imitation of nature the Merethic ancestors dwelled in. Thus we can contrapose Velothi phonetic systems, filled with fricatives, trilled rhotics, and a wide variety of close front vowels with that of the Dwemers, which employed a harsher, consonant-oriented phonology, littered with guttural sounds, plosives, and bilabials. This can be seen as a crude record of the turbulent history of the Dunmer ancestors - from strolling through windy planes to eventually settling amongst rocks, parasol trees and their Dwemer brether.
+
+Another element showing the relatively primitive language devices is the use of lexical repetition, where elements are multiplied, in order to convey a higher degree of quantity or quality. This has turned into a specialised words, carrying much more precise meaning.
+
+These general vectors of developments eventually gave rise to the Yan-Dunmeri, or 'Young Dunmeri', where smaller elements are more loosly joined together in a phrase of its own, rather then a morpheme.
+"""
+
+[elements]
