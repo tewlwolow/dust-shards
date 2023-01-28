@@ -17,7 +17,7 @@ class DustShards(QApplication):
         QFontDatabase.addApplicationFont("Mistic-Regular.ttf")
         QFontDatabase.addApplicationFont("Pelagiad.ttf")
 
-        stylesheet = styler.Theme.KIMBIE_DARK
+        stylesheet = styler.Theme.MONOKAI_DIMMED
         self.setStyleSheet(styler.load_stylesheet(stylesheet))
         self.window = MainWindow(self)
         self.window.show()
