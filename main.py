@@ -1,6 +1,3 @@
-from languages.dunmeri import AldDunmeri
-ald_dunmeri = AldDunmeri()
-
 import sys
 from ui.app import DustShards
 

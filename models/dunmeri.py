@@ -1,4 +1,4 @@
-from languages.blueprint import Language
+from models.blueprint import Language
 
 class AldDunmeri(Language):
     def __init__(self):

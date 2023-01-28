@@ -2,7 +2,7 @@ import tomllib
 
 class Language:
     """
-    A base class for all languages in our project.
+    A base class for all models in our project.
     """
     def __init__(self, data):
         with open(data, mode='rb') as metadata:
