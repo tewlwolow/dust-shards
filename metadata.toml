@@ -1,4 +1,4 @@
-name = "dust shards"
+name = "Dust Shards"
 version = "0.0.1"
 author = "tewlwolow"
-description = "barebones language parser for Morrowind's native dialects"
+description = "Language parser and data bank for Morrowind's native dialects"
