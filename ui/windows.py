@@ -2,13 +2,11 @@ import tomllib
 
 from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTableView
-
-from ui import widgets
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableView
 
 from languages import Languages
+from ui import widgets
 from ui.widgets import LanguageBrowseBar, TableModel
-from util import Util
 
 Languages = Languages()
 
@@ -141,11 +139,11 @@ class CorpusContent(QWidget):
         self.parent = parent
 
         layout = QVBoxLayout()
-        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.setLayout(layout)
 
         self.table = QTableView()
-
+        self.table.setGridStyle(Qt.PenStyle.DashLine)
         self.table.setStyleSheet('color: cornsilk;')
 
         self.model = TableModel(content)
