@@ -131,7 +131,7 @@ class LanguageContent(QWidget):
 
         self.label = widgets.TextBlockLabel(content, 15)
         self.label.setStyleSheet('color: cornsilk;')
-        self.label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.label.setAlignment(Qt.AlignmentFlag.AlignJustify)
 
         layout.addWidget(self.label)
 
