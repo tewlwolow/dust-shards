@@ -2,12 +2,13 @@ import tomllib
 
 from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QTableView
 
 from ui import widgets
 
 from languages import Languages
-from ui.widgets import LanguageButton, BrowseBar
+from ui.widgets import LanguageBrowseBar, TableModel
+from util import Util
 
 Languages = Languages()
 
@@ -20,10 +21,10 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.app = app
-        self.language_window = None
-        self.activity_bar = BrowseBar()
-        self.activity_bar.show()
-        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.activity_bar)
+
+        self.dock = LanguageBrowseBar(self)
+        self.dock.show()
+        self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dock)
 
         self.setWindowTitle('Dust Shards v.' + metadata['version'])
         self.resize(self.screen().availableGeometry().size() * 0.8)
@@ -35,10 +36,20 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.welcome_window)
         self.welcome_window.show()
 
-    def show_language(self, language) -> None:
-        self.language_window = LanguageWindow(self, language)
-        self.setCentralWidget(self.language_window)
-        self.language_window.show()
+    def show_description(self, language) -> None:
+        description_window = DescriptionWindow(self, language)
+        self.setCentralWidget(description_window)
+        description_window.show()
+
+    def show_history(self, language) -> None:
+        history_window = HistoryWindow(self, language)
+        self.setCentralWidget(history_window)
+        history_window.show()
+
+    def show_corpus(self, language) -> None:
+        corpus_window = CorpusWindow(self, language)
+        self.setCentralWidget(corpus_window)
+        corpus_window.show()
 
 class WelcomeWindow(QWidget):
     def __init__(self, parent) -> None:
@@ -51,7 +62,6 @@ class WelcomeWindow(QWidget):
 
         self.header = WelcomeHeader(self)
         self.logo = WelcomeLogo(self)
-        # self.buttons = WelcomeButtonBlock(self)
 
         layout.addWidget(self.header)
         layout.addWidget(self.logo)
@@ -75,7 +85,6 @@ class WelcomeHeader(QWidget):
         self.description_label.setStyleSheet('color: cornsilk;')
         self.description_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
-
         layout.addWidget(self.name_label)
         layout.addWidget(self.description_label)
 
@@ -96,21 +105,57 @@ class WelcomeLogo(QWidget):
         layout.addWidget(self.image_label)
 
 
-class WelcomeButtonBlock(QWidget):
-    def __init__(self, parent):
+class LanguageHeader(QWidget):
+    def __init__(self, parent, lang_name):
         super().__init__()
         self.parent = parent
 
-        layout = QHBoxLayout()
-        layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.setLayout(layout)
 
-        for language in Languages.archive:
-            lang_button = LanguageButton(self, language)
+        self.name_label = widgets.TextBlockLabel(lang_name, 45, 'Mistic')
+        self.name_label.setStyleSheet('color: coral;')
+        self.name_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
 
-            layout.addWidget(lang_button)
+        layout.addWidget(self.name_label)
 
-class LanguageWindow(QWidget):
+class LanguageContent(QWidget):
+    def __init__(self, parent, content):
+        super().__init__()
+        self.parent = parent
+
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.setLayout(layout)
+
+        self.label = widgets.TextBlockLabel(content, 15)
+        self.label.setStyleSheet('color: cornsilk;')
+        self.label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+        layout.addWidget(self.label)
+
+class CorpusContent(QWidget):
+    def __init__(self, parent, content):
+        super().__init__()
+        self.parent = parent
+
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.setLayout(layout)
+
+        self.table = QTableView()
+
+        self.table.setStyleSheet('color: cornsilk;')
+
+        self.model = TableModel(content)
+        self.table.setModel(self.model)
+        self.table.resizeColumnsToContents()
+        self.table.resizeRowsToContents()
+
+        layout.addWidget(self.table)
+
+class DescriptionWindow(QWidget):
     def __init__(self, parent, language) -> None:
         super().__init__()
         self.parent = parent
@@ -120,29 +165,40 @@ class LanguageWindow(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.setLayout(layout)
 
-        self.header = LanguageHeader(self)
+        self.header = LanguageHeader(self, self.language.name)
+        self.content = LanguageContent(self, self.language.description)
 
         layout.addWidget(self.header)
+        layout.addWidget(self.content)
 
-
-class LanguageHeader(QWidget):
-    def __init__(self, parent):
+class HistoryWindow(QWidget):
+    def __init__(self, parent, language) -> None:
         super().__init__()
         self.parent = parent
-
-        self.setMaximumHeight(int(self.height()/1.5))
+        self.language = language
 
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.setLayout(layout)
 
-        self.name_label = widgets.TextBlockLabel(parent.language.name, 45, 'Mistic')
-        self.name_label.setStyleSheet('color: coral;')
-        self.name_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        self.header = LanguageHeader(self, self.language.name)
+        self.content = LanguageContent(self, self.language.history)
 
-        self.description_label = widgets.TextBlockLabel(self.parent.language.description, 15)
-        self.description_label.setStyleSheet('color: cornsilk;')
-        self.description_label.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+        layout.addWidget(self.header)
+        layout.addWidget(self.content)
 
-        layout.addWidget(self.name_label)
-        layout.addWidget(self.description_label)
+class CorpusWindow(QWidget):
+    def __init__(self, parent, language) -> None:
+        super().__init__()
+        self.parent = parent
+        self.language = language
+
+        layout = QVBoxLayout()
+        layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.setLayout(layout)
+
+        self.header = LanguageHeader(self, self.language.name)
+        self.content = CorpusContent(self, self.language.corpus['vanilla']['locations'])
+
+        layout.addWidget(self.header)
+        layout.addWidget(self.content)

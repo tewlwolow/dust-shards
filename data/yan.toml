@@ -1,0 +1,18 @@
+name = "Yan Dunmeri"
+
+description = """
+The newer House Dialect, or Young Dunmeri, is the modern evolution of the ancient Chimeri dialect. The primary change between the two dialects is the migration away from using the complex compound words which are prevalent in Ald'Dunmeri. In place of the descriptive compounds used in Ald'Dunmeri, Yan'Dunmeri utilizes sets of specialized abbreviations with documented and universally accepted (among the Housemer at least) definitions. Many of the old morphemes are preserved in Yan'Dunmeri, but many more have fallen into disuse in favor of more easily pronouncable variations.
+"""
+
+history = """
+After the initial developments in Ald Dunmeri, the general tendency towards free-standing morphemes instead of agglutinative morphology continued. Despite the disappearance of the Dwemer, several features lived on and still influenced Yan Dunmeri. The House Dialect has become increasingly refined and polished and phonemic system was largely simplified as the Dunmer settled for good in Resdayn.
+
+The old elements still influence onomastics, especially geographical names. On top of that, the Ashlander tribes continue to use a dialect which is largely Ald Dunmeri, with weak influences from Yan Dunmeri. Yan Dunmeri, on the other hand, is now topically suberseded by the Imperial Common Speech. The strongholds of modern, civilised Dunmeri language stand strong in Indoril and Dres areas.
+
+Apart from a myriad of interspersed dialects and sociolects, one notable example is Temple Vernacular. The basis for this idiomatic Dunmeri dialect is still Yan Dunmeri, but it's filled with vocabulary and peculiar literary devices which historically link to Ald Dunmeri. It can be seen as a divergent stage of development between these two main phases.
+"""
+
+[corpus.vanilla]
+    locations = [
+
+    ]

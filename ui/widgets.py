@@ -1,158 +1,207 @@
-from PyQt6.QtCore import QSize, Qt, QObject
-from PyQt6.QtGui import QFont, QColor, QAction, QIcon, QPainter
-from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QListWidget, QStackedWidget, QWidget, \
-	QListWidgetItem, QMainWindow, QVBoxLayout
-from qtvscodestyle import theme_icon, Vsc
-from qtvscodestyle.qtpy.QtCore import Signal
+from PyQt6 import QtCore, QtWidgets
+from PyQt6.QtCore import Qt, QByteArray
+from PyQt6.QtGui import QFont
+from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidget
+
+from languages import Languages
+from util import Util
+Util = Util()
 
 class TextBlockLabel(QLabel):
 	def __init__(self, text: str, font_size = None, font_type = None) -> None:
 		super().__init__(text)
 		self.setWordWrap(True)
-		self.setFont(QFont(font_type or 'Pelagiad', font_size or 12))
-		self.setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Minimum)
+		self.setFont(QFont(font_type or 'Pelagiad', font_size or 13))
+		self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+		self.setStyleSheet("QLabel { background-color: none; }")
 
-class LanguageButton(QPushButton):
-	def __init__(self, parent, language):
+class TableModel(QtCore.QAbstractTableModel):
+	def __init__(self, data):
+		super(TableModel, self).__init__()
+
+		self._data = []
+		for l in data:
+			item = [l, self.unpack(Util.get_stem(l))]
+			self._data.append(item)
+
+	def unpack(self, array: list) -> str:
+		cell_data = ""
+		for stem in array:
+			cell_data += f"{stem}\n"
+		return cell_data.rstrip()
+
+	def data(self, index, role):
+		if role == Qt.ItemDataRole.DisplayRole:
+			return self._data[index.row()][index.column()]
+
+	def rowCount(self, index):
+		return len(self._data)
+
+	def columnCount(self, index):
+		return len(self._data[0])
+
+class LanguagePropertiesButton(QPushButton):
+	def __init__(self, text: str, font_size: int = None, font_type: str = None) -> None:
+		super().__init__(text)
+		self.setFont(QFont(font_type or 'Pelagiad', font_size or 14))
+		self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+		self.setStyleSheet("QPushButton { background-color: none; color: cornsilk;}")
+
+class LanguageDescriptionButton(LanguagePropertiesButton):
+	def __init__(self, text: str, parent, lang) -> None:
+		super().__init__(text)
+		self.parent = parent
+		self.lang = lang
+
+		def description_action():
+			self.parent.parent.show_description(self.lang)
+
+		self.clicked.connect(description_action)
+
+class LanguageHistoryButton(LanguagePropertiesButton):
+	def __init__(self, text: str, parent, lang) -> None:
+		super().__init__(text)
+		self.parent = parent
+		self.lang = lang
+
+		def history_action():
+			self.parent.parent.show_history(self.lang)
+
+		self.clicked.connect(history_action)
+
+class LanguageCorpusButton(LanguagePropertiesButton):
+	def __init__(self, text: str, parent, lang) -> None:
+		super().__init__(text)
+		self.parent = parent
+		self.lang = lang
+
+		def corpus_action():
+			self.parent.parent.show_corpus(self.lang)
+
+		self.clicked.connect(corpus_action)
+
+
+class LanguageCollapsibleButton(QWidget):
+	def __init__(self, title="", parent=None):
+		super().__init__(parent)
+
+		self.setStyleSheet("""
+			background-color: rgba(245,245,220, 0);
+			border: none;
+		""")
+
+		self.toggle_button = QtWidgets.QToolButton()
+		self.toggle_button.setText(title)
+		self.toggle_button.setFont(QFont('Pelagiad', 16))
+
+		self.toggle_button.setCheckable(True)
+		self.toggle_button.setChecked(False)
+
+		self.toggle_button.setStyleSheet("QToolButton { background-color: none; color: burlywood; }")
+
+		self.toggle_button.setToolButtonStyle(
+			QtCore.Qt.ToolButtonStyle.ToolButtonTextBesideIcon
+		)
+		self.toggle_button.setArrowType(QtCore.Qt.ArrowType.RightArrow)
+		self.toggle_button.pressed.connect(self.on_pressed)
+
+		self.toggle_animation = QtCore.QParallelAnimationGroup(self)
+
+		self.content_area = QtWidgets.QScrollArea()
+		self.content_area.setMaximumHeight(0)
+		self.content_area.setMinimumHeight(0)
+		self.content_area.setSizePolicy(
+			QSizePolicy.Policy.Expanding,
+			QSizePolicy.Policy.Fixed
+		)
+		self.content_area.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
+
+		lay = QtWidgets.QVBoxLayout(self)
+		lay.setSpacing(0)
+		lay.setContentsMargins(0, 0, 0, 0)
+		lay.addWidget(self.toggle_button)
+		lay.addWidget(self.content_area)
+
+		self.toggle_animation.addAnimation(
+			QtCore.QPropertyAnimation(self.content_area, QByteArray(b"maximumHeight"))
+		)
+
+	@QtCore.pyqtSlot()
+	def on_pressed(self):
+		checked = self.toggle_button.isChecked()
+		self.toggle_button.setArrowType(
+			QtCore.Qt.ArrowType.DownArrow if not checked else QtCore.Qt.ArrowType.RightArrow
+		)
+		self.toggle_animation.setDirection(
+			QtCore.QAbstractAnimation.Direction.Forward
+			if not checked
+			else QtCore.QAbstractAnimation.Direction.Backward
+		)
+		self.toggle_animation.start()
+
+	def set_content_layout(self, layout):
+		lay = self.content_area.layout()
+		del lay
+		self.content_area.setLayout(layout)
+		collapsed_height = (
+				self.sizeHint().height() - self.content_area.maximumHeight()
+		)
+		content_height = layout.sizeHint().height()
+
+		for i in range(self.toggle_animation.animationCount()):
+			animation = self.toggle_animation.animationAt(i)
+			animation.setDuration(75)
+			animation.setStartValue(collapsed_height)
+			animation.setEndValue(collapsed_height + content_height)
+
+		content_animation = self.toggle_animation.animationAt(
+			self.toggle_animation.animationCount() - 1
+		)
+		content_animation.setDuration(75)
+		content_animation.setStartValue(0)
+		content_animation.setEndValue(content_height)
+
+class LanguageBrowseBar(QDockWidget):
+	def __init__(self, parent):
 		super().__init__()
 
 		self.parent = parent
-		self.setText(language.name)
-		self.setFixedSize(150, 60)
-		self.setFont(QFont('Pelagiad', 18))
-		self.setStyleSheet("""
-			color: azure;
-			background-color: rgba(245,245,220, 0.1);
-			border-radius: 8px;
-		"""
-		)
 
-		def on_button_clicked():
-			self.parent.parent.parent.show_language(language)
-
-
-		self.clicked.connect(on_button_clicked)
-
-class ActivityBarItem(QListWidgetItem, QObject):
-
-	hovered = Signal()
-	toggled = Signal(bool)
-	triggered = Signal()
-
-	_action: QAction
-	_widget: QWidget
-
-	def __init__(self, widget: QWidget, icon: QIcon | str, text: str):
-		super().__init__()
-
-		icon = self._create_icon(icon)
-
-		font = self.font()
-		font.setFamily('Pelagiad')
-		font.setPointSize(15)
-
-		self.setIcon(icon)
-		self.setFont(font)
-		self.setText(text)
-
-		# The associated window that is visible while active.
-		self._widget = widget
-
-		# Make an action that forwards its events to the widget.
-		self._action = QAction(text)
-		self._action.hovered.connect(self.hovered.emit)
-		self._action.toggled.connect(self.toggled.emit)
-		self._action.triggered.connect(self.triggered.emit)
-
-	@staticmethod
-	def _create_icon(icon: QIcon | str) -> QIcon:
-		icon = QIcon(icon) if isinstance(icon, str) else icon
-
-		pixmap = icon.pixmap(128, 128)
-		mask = pixmap.mask()
-
-		painter = QPainter(pixmap)
-		painter.fillRect(pixmap.rect(), QColor.fromRgb(245,245,220))
-		painter.end()
-
-		pixmap.setMask(mask)
-
-		icon = QIcon(pixmap)
-		icon.addPixmap(pixmap, QIcon.Mode.Selected)
-
-		return icon
-
-class BrowseBar(QDockWidget):
-	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-
-		self._list = QListWidget()
-		self._list.setIconSize(QSize(30, 30))
-		self._list.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-		self._list.setSelectionMode(QListWidget.SelectionMode.SingleSelection)
-		self._list.currentItemChanged.connect(self.set_current_item)
-		self._list.setStyleSheet(
-			"""
-            QListWidget { background: rgba(255,245,238, 0.02); }
-            QListWidget::item:selected { color: #D1AD61; rgba(255,245,238, 0.04); }
-            """
-		)
-
-		self._view = QStackedWidget()
+		self.languages = Languages()
 
 		# Customize Look
-
 		self.setFeatures(QDockWidget.DockWidgetFeature.NoDockWidgetFeatures)
 		self.setTitleBarWidget(QWidget())  # hide title bar
-		self.setMinimumWidth(self._list.iconSize().width() + 12)
-		self.setWidget(self._list)
 
-		self.add_item(
-			ActivityBarItem(
-				widget=LanguagesDock(),
-				icon=theme_icon(Vsc.BOOK),
-				text="Languages",
-			)
-		)
+		scroll = QtWidgets.QScrollArea()
+		self.setWidget(scroll)
+		content = QtWidgets.QWidget()
+		scroll.setWidget(content)
+		scroll.setWidgetResizable(True)
+		scroll.setFrameShape(QtWidgets.QFrame.Shape.NoFrame)
 
-	def add_item(self, item: ActivityBarItem) -> None:
-		"""Add a new item to the activity bar."""
-		self._list.addItem(item)
-		self._view.addWidget(item._widget)
+		vlay = QtWidgets.QVBoxLayout(content)
+		for lang in self.languages.archive:
+			box = LanguageCollapsibleButton(lang.name)
+			vlay.addWidget(box)
 
-	def remove_item(self, item: ActivityBarItem) -> None:
-		"""Remove an item from the activity bar."""
-		i = self._list.indexFromItem(item).row()
-		if i != -1:
-			self._list.takeItem(i)
-			self._view.removeWidget(item._widget)
+			lay = QtWidgets.QVBoxLayout()
 
-	def set_current_item(self, item: ActivityBarItem) -> None:
-		"""Set the currently active item in the activity bar."""
-		i = self._list.indexFromItem(item).row()
-		if i != -1:
-			self._list.setCurrentRow(i)
-			self._view.setCurrentIndex(i)
+			description = LanguageDescriptionButton("\t\tDescription", self, lang)
+			lay.addWidget(description, alignment=Qt.AlignmentFlag.AlignLeft)
 
-class LanguagesDock(QWidget):
-	left_dock: QDockWidget
+			history = LanguageHistoryButton("\t\tHistory", self, lang)
+			lay.addWidget(history, alignment=Qt.AlignmentFlag.AlignLeft)
 
-	def __init__(self) -> None:
-		super().__init__()
+			corpus = LanguageCorpusButton("\t\tCorpus", self, lang)
+			lay.addWidget(corpus, alignment=Qt.AlignmentFlag.AlignLeft)
 
-		# Widgets
-		self.left_dock = QDockWidget("Languages")
-		#
-		# # Setup widgets
-		# self.left_dock.setWidget(self.explorer)
+			box.set_content_layout(lay)
 
-		# Layout
-		main_win = QMainWindow()
-		main_win.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.left_dock)
+		vlay.addStretch()
 
-		layout = QVBoxLayout(self)
-		layout.addWidget(main_win)
-		layout.setContentsMargins(0, 0, 0, 0)
+
+
 
 
 

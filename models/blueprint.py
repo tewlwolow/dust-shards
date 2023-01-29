@@ -11,4 +11,5 @@ class Language:
         self.name = self.data['name']
         self.description = self.data['description']
         self.history = self.data['history']
+        self.corpus = {'vanilla': self.data['corpus']['vanilla']}
 

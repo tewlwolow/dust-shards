@@ -3,4 +3,4 @@ class Languages:
     archive = None
 
     def __init__(self):
-        self.archive: list = [dunmeri.AldDunmeri()]
+        self.archive: list = [dunmeri.AldDunmeri(), dunmeri.YanDunmeri()]
