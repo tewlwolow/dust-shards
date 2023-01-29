@@ -24,7 +24,8 @@ class TableModel(QtCore.QAbstractTableModel):
 			item = [l, self.unpack(Util.get_stem(l))]
 			self._data.append(item)
 
-	def unpack(self, array: list) -> str:
+	@staticmethod
+	def unpack(array: list) -> str:
 		cell_data = ""
 		for stem in array:
 			cell_data += f"{stem}\n"
