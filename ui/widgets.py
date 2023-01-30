@@ -19,10 +19,17 @@ class TableModel(QtCore.QAbstractTableModel):
 	def __init__(self, data):
 		super(TableModel, self).__init__()
 
-		self._data = []
+		self.setHeaderData(0, Qt.Orientation.Horizontal, Qt.AlignmentFlag.AlignHCenter, Qt.ItemDataRole.TextAlignmentRole)
+		self.setHeaderData(0, Qt.Orientation.Vertical, Qt.AlignmentFlag.AlignVCenter, Qt.ItemDataRole.TextAlignmentRole)
+
+		self._data = {
+			'headers': ['Word', 'Stem'],
+			'content': []
+		}
+
 		for l in data:
 			item = [l, self.unpack(Util.get_stem(l))]
-			self._data.append(item)
+			self._data['content'].append(item)
 
 	@staticmethod
 	def unpack(array: list) -> str:
@@ -31,15 +38,21 @@ class TableModel(QtCore.QAbstractTableModel):
 			cell_data += f"{stem}\n"
 		return cell_data.rstrip()
 
+	def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: int = ...):
+		if orientation == QtCore.Qt.Orientation.Horizontal and role == QtCore.Qt.ItemDataRole.DisplayRole:
+			return self._data['headers'][section]
+
 	def data(self, index, role):
 		if role == Qt.ItemDataRole.DisplayRole:
-			return self._data[index.row()][index.column()]
+			return self._data['content'][index.row()][index.column()]
+		elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
+			return Qt.AlignmentFlag.AlignCenter
 
 	def rowCount(self, index):
-		return len(self._data)
+		return len(self._data['content'])
 
 	def columnCount(self, index):
-		return len(self._data[0])
+		return len(self._data['headers'])
 
 class LanguagePropertiesButton(QPushButton):
 	def __init__(self, text: str, font_size: int = None, font_type: str = None) -> None:

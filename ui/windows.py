@@ -148,9 +148,9 @@ class CorpusContent(QWidget):
 
         self.model = TableModel(content)
         self.table.setModel(self.model)
-        self.table.resizeColumnsToContents()
-        self.table.resizeRowsToContents()
 
+        self.table.resizeRowsToContents()
+        self.table.resizeColumnsToContents()
         layout.addWidget(self.table)
 
 class DescriptionWindow(QWidget):
