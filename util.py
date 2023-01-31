@@ -1,6 +1,7 @@
 import re
 
-PATTERN = r'([^aeiou]+)'
+BASIC = r'([^aeiou]+)'
+GROUPING = r'([qwrtypsdfghjklzxcvbnm]{2,4})'
 
 class Util:
     def __init__(self):
@@ -8,4 +9,5 @@ class Util:
 
     @staticmethod
     def get_stem(word: str):
-        return re.findall(PATTERN, word.lower())
+        stems = ''.join(re.findall(BASIC, word.lower()))
+        return re.findall(GROUPING, stems)
