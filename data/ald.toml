@@ -18,8 +18,6 @@ These general vectors of developments eventually gave rise to the Yan-Dunmeri, o
 
 [corpus.vanilla]
     locations = [
-        'Assarnibibi',
-        'Kand',
         'Abanabi',
         'Abernanit',
         'Abinabi',
@@ -33,9 +31,10 @@ These general vectors of developments eventually gave rise to the Yan-Dunmeri, o
         'Ansi',
         'Ashanammu',
         'Ashinabi',
-        'Ashirbadon',
         'Ashir-Dan',
+        'Ashirbadon',
         'Ashmelech',
+        'Assarnibibi',
         'Assarnud',
         'Assemanu',
         'Assu',
@@ -49,6 +48,7 @@ These general vectors of developments eventually gave rise to the Yan-Dunmeri, o
         'Hinnabi',
         'Ibar-Dad',
         'Ilunibi',
+        'Kand',
         'Kora-Dur',
         'Kudanat',
         'Kumarahaz',
