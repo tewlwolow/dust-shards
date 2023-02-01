@@ -2,7 +2,9 @@ import re
 
 CONSONANTS = r'([^aeiou]+)'
 CLUSTERS = r'([qwrtypsdfghjklzxcvbnm]{2,4})'
-STEMS = r'(nm|bnb|ddm)'
+# CLUSTERS_34 = r'([qwrtypsdfghjklzxcvbnm]{3,4}?)'
+
+STEMS = r'(nm|bnb|ddm|)'
 
 class Util:
     def __init__(self):
@@ -16,4 +18,5 @@ class Util:
 
     def get_stem(word: str):
         consonants = ''.join(re.findall(CONSONANTS, word.lower()))
-        return re.findall(CLUSTERS, consonants)
+        result = re.findall(CLUSTERS, consonants)
+        return result
