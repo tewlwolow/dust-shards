@@ -4,8 +4,8 @@ from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidget
 
 from languages import Languages
-from util import Util
-Util = Util()
+
+import util
 
 class TextBlockLabel(QLabel):
 	def __init__(self, text: str, font_size = None, font_type = None) -> None:
@@ -28,7 +28,7 @@ class TableModel(QtCore.QAbstractTableModel):
 		}
 
 		for l in data:
-			item = [l, self.unpack(Util.get_stem(l))]
+			item = [l, self.unpack(util.get_stem(l))]
 			self._data['content'].append(item)
 
 	@staticmethod

@@ -1,22 +1,20 @@
 import re
+import pyphen
+dic = pyphen.Pyphen(filename='data/ald.dic')
 
 CONSONANTS = r'([^aeiou]+)'
-CLUSTERS = r'([qwrtypsdfghjklzxcvbnm]{2,4})'
-# CLUSTERS_34 = r'([qwrtypsdfghjklzxcvbnm]{3,4}?)'
+CLUSTERS = r'([qwrtypsdfghjklzxcvbnm]{1,4})'
+DOUBLES = r'(\w)\1'
 
-STEMS = r'(nm|bnb|ddm|)'
+def syllabise(word: str) -> list:
+    hyphenated = dic.inserted(word)
+    return hyphenated.split('-')
 
-class Util:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    # def get_stem(word: str):
-    #     consonants = ''.join(re.findall(CONSONANTS, word.lower()))
-    #     clusters = ''.join(re.findall(CLUSTERS, consonants))
-    #     return re.findall(STEMS, clusters)
-
-    def get_stem(word: str):
-        consonants = ''.join(re.findall(CONSONANTS, word.lower()))
-        result = re.findall(CLUSTERS, consonants)
-        return result
+def get_stem(word: str):
+    stems = []
+    syllabised = syllabise(word.lower())
+    for syllable in syllabised:
+        consonants = ''.join(re.findall(CONSONANTS, syllable))
+        stems += re.findall(CLUSTERS, consonants)
+        print("\n")
+    return stems
