@@ -1,12 +1,18 @@
 UTF-8
 
-aber1
-nanit1
-adanu1
-muran1
-addama1
-sartus1
-ahar1
-nabi1
-ahini1
-palit1
+LEFTHYPHENMIN 2
+RIGHTHYPHENMIN 3
+COMPOUNDLEFTHYPHENMIN 2
+COMPOUNDRIGHTHYPHENMIN 3
+
+1aber1
+1nanit1
+1adanu1
+1muran1
+1addama1
+1sartus1
+1ahar1
+1nabi1
+1ahini1
+1palit1
+1nammu1
