@@ -1,11 +1,17 @@
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, QByteArray
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidget
+from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidget, QFrame
 
 from languages import Languages
 
 import util
+
+class QHLine(QFrame):
+	def __init__(self):
+		super(QHLine, self).__init__()
+		self.setFrameShape(QFrame.Shape.HLine)
+		self.setFrameShadow(QFrame.Shadow.Sunken)
 
 class TextBlockLabel(QLabel):
 	def __init__(self, text: str, font_size = None, font_type = None) -> None:
@@ -200,8 +206,9 @@ class LanguageBrowseBar(QDockWidget):
 			lay = QtWidgets.QVBoxLayout()
 
 			label = TextBlockLabel(lang.name, 16)
-			label.setStyleSheet("QLabel { background-color: none; color: burlywood; text-decoration: underline;}")
+			label.setStyleSheet("QLabel { background-color: none; color: burlywood;}")
 			vlay.addWidget(label)
+			vlay.addWidget(QHLine())
 
 			description = LanguageDescriptionButton("\t\tDescription", self, lang)
 			vlay.addWidget(description, alignment=Qt.AlignmentFlag.AlignLeft)
