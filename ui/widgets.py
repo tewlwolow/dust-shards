@@ -113,7 +113,7 @@ class LanguageCollapsibleButton(QWidget):
 
 		self.toggle_button = QtWidgets.QToolButton()
 		self.toggle_button.setText(title)
-		self.toggle_button.setFont(QFont('Pelagiad', 16))
+		self.toggle_button.setFont(QFont('Pelagiad', 14))
 
 		self.toggle_button.setCheckable(True)
 		self.toggle_button.setChecked(False)
@@ -205,8 +205,8 @@ class LanguageBrowseBar(QDockWidget):
 		for lang in self.languages.archive:
 			lay = QtWidgets.QVBoxLayout()
 
-			label = TextBlockLabel(lang.name, 16)
-			label.setStyleSheet("QLabel { background-color: none; color: burlywood;}")
+			label = TextBlockLabel(lang.name, 18)
+			label.setStyleSheet("QLabel { background-color: none; color: sandybrown;}")
 			vlay.addWidget(label)
 			vlay.addWidget(QHLine())
 
