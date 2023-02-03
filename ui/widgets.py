@@ -50,7 +50,6 @@ class TableModel(QtCore.QAbstractTableModel):
 		if orientation == QtCore.Qt.Orientation.Horizontal and role == QtCore.Qt.ItemDataRole.DisplayRole:
 			header = self.parent.horizontalHeader()
 			for index, _ in enumerate(self._data['headers']):
-				print(index)
 				header.setSectionResizeMode(index, QHeaderView.ResizeMode.Stretch)
 			return self._data['headers'][section]
 
