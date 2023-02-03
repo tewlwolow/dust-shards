@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtWidgets
 from PyQt6.QtCore import Qt, QByteArray
 from PyQt6.QtGui import QFont
-from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidget, QFrame
+from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidget, QFrame, QHeaderView, QTableView
 
 from languages import Languages
 
@@ -22,8 +22,9 @@ class TextBlockLabel(QLabel):
 		self.setStyleSheet("QLabel { background-color: none; }")
 
 class TableModel(QtCore.QAbstractTableModel):
-	def __init__(self, data):
-		super(TableModel, self).__init__()
+	def __init__(self, parent: QTableView, data):
+		super().__init__()
+		self.parent = parent
 
 		self.setHeaderData(0, Qt.Orientation.Horizontal, Qt.AlignmentFlag.AlignHCenter, Qt.ItemDataRole.TextAlignmentRole)
 		self.setHeaderData(0, Qt.Orientation.Vertical, Qt.AlignmentFlag.AlignVCenter, Qt.ItemDataRole.TextAlignmentRole)
@@ -37,6 +38,7 @@ class TableModel(QtCore.QAbstractTableModel):
 			item = [l, self.unpack(util.get_stem(l))]
 			self._data['content'].append(item)
 
+
 	@staticmethod
 	def unpack(array: list) -> str:
 		cell_data = ""
@@ -46,6 +48,10 @@ class TableModel(QtCore.QAbstractTableModel):
 
 	def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: int = ...):
 		if orientation == QtCore.Qt.Orientation.Horizontal and role == QtCore.Qt.ItemDataRole.DisplayRole:
+			header = self.parent.horizontalHeader()
+			for index, _ in enumerate(self._data['headers']):
+				print(index)
+				header.setSectionResizeMode(index, QHeaderView.ResizeMode.Stretch)
 			return self._data['headers'][section]
 
 	def data(self, index, role):

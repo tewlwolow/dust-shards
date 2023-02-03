@@ -2,7 +2,7 @@ import tomllib
 
 from PyQt6 import QtGui
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableView
+from PyQt6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QTableView, QHeaderView
 
 from languages import Languages
 from ui import widgets
@@ -146,7 +146,7 @@ class CorpusContent(QWidget):
         self.table.setGridStyle(Qt.PenStyle.DashLine)
         self.table.setStyleSheet('color: cornsilk;')
 
-        self.model = TableModel(content)
+        self.model = TableModel(self.table, content)
         self.table.setModel(self.model)
 
         self.table.resizeRowsToContents()
