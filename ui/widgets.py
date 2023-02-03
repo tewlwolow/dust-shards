@@ -84,13 +84,14 @@ class LanguageHistoryButton(LanguagePropertiesButton):
 		self.clicked.connect(history_action)
 
 class LanguageCorpusButton(LanguagePropertiesButton):
-	def __init__(self, text: str, parent, lang) -> None:
+	def __init__(self, text: str, parent, lang, corpus) -> None:
 		super().__init__(text)
 		self.parent = parent
 		self.lang = lang
+		self.corpus = corpus
 
 		def corpus_action():
-			self.parent.parent.show_corpus(self.lang)
+			self.parent.parent.show_corpus(self.lang, self.corpus)
 
 		self.clicked.connect(corpus_action)
 
@@ -196,21 +197,25 @@ class LanguageBrowseBar(QDockWidget):
 
 		vlay = QtWidgets.QVBoxLayout(content)
 		for lang in self.languages.archive:
-			box = LanguageCollapsibleButton(lang.name)
-			vlay.addWidget(box)
-
 			lay = QtWidgets.QVBoxLayout()
 
+			label = TextBlockLabel(lang.name, 16)
+			label.setStyleSheet("QLabel { background-color: none; color: burlywood; text-decoration: underline;}")
+			vlay.addWidget(label)
+
 			description = LanguageDescriptionButton("\t\tDescription", self, lang)
-			lay.addWidget(description, alignment=Qt.AlignmentFlag.AlignLeft)
+			vlay.addWidget(description, alignment=Qt.AlignmentFlag.AlignLeft)
 
 			history = LanguageHistoryButton("\t\tHistory", self, lang)
-			lay.addWidget(history, alignment=Qt.AlignmentFlag.AlignLeft)
+			vlay.addWidget(history, alignment=Qt.AlignmentFlag.AlignLeft)
 
-			corpus = LanguageCorpusButton("\t\tCorpus", self, lang)
-			lay.addWidget(corpus, alignment=Qt.AlignmentFlag.AlignLeft)
+			corpus = LanguageCollapsibleButton("Corpus")
+			vlay.addWidget(corpus, alignment=Qt.AlignmentFlag.AlignLeft)
 
-			box.set_content_layout(lay)
+			vanilla_locations = LanguageCorpusButton("\t\tVanilla toponymy", self, lang, lang.corpus['vanilla']['toponymy'])
+			lay.addWidget(vanilla_locations, alignment=Qt.AlignmentFlag.AlignLeft)
+
+			corpus.set_content_layout(lay)
 
 		vlay.addStretch()
 

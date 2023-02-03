@@ -44,8 +44,8 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(history_window)
         history_window.show()
 
-    def show_corpus(self, language) -> None:
-        corpus_window = CorpusWindow(self, language)
+    def show_corpus(self, language, corpus) -> None:
+        corpus_window = CorpusWindow(self, language, corpus)
         self.setCentralWidget(corpus_window)
         corpus_window.show()
 
@@ -186,17 +186,18 @@ class HistoryWindow(QWidget):
         layout.addWidget(self.content)
 
 class CorpusWindow(QWidget):
-    def __init__(self, parent, language) -> None:
+    def __init__(self, parent, language, corpus) -> None:
         super().__init__()
         self.parent = parent
         self.language = language
+        self.corpus = corpus
 
         layout = QVBoxLayout()
         layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         self.setLayout(layout)
 
         self.header = LanguageHeader(self, self.language.name)
-        self.content = CorpusContent(self, self.language.corpus['vanilla']['locations'])
+        self.content = CorpusContent(self, self.corpus)
 
         layout.addWidget(self.header)
         layout.addWidget(self.content)

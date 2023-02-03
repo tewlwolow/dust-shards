@@ -13,6 +13,6 @@ Apart from a myriad of interspersed dialects and sociolects, one notable example
 """
 
 [corpus.vanilla]
-    locations = [
+    toponymy = [
 
     ]
