@@ -5,7 +5,7 @@ from PyQt6.QtWidgets import QLabel, QSizePolicy, QPushButton, QDockWidget, QWidg
 
 from languages import Languages
 
-import util
+from util import WordParser
 
 class QHLine(QFrame):
 	def __init__(self):
@@ -30,21 +30,21 @@ class TableModel(QtCore.QAbstractTableModel):
 		self.setHeaderData(0, Qt.Orientation.Vertical, Qt.AlignmentFlag.AlignVCenter, Qt.ItemDataRole.TextAlignmentRole)
 
 		self._data = {
-			'headers': ['Word', 'Stem'],
-			'content': []
+			'headers': ['Word', 'Syllables', 'Stems'],
+			'content': [[], [], []]
 		}
 
-		for l in data:
-			item = [l, self.unpack(util.get_stem(l))]
-			self._data['content'].append(item)
+		def unpack(array: list) -> str:
+			cell_data = ""
+			for stem in array:
+				cell_data += f"{stem}\n"
+			return cell_data.rstrip()
 
-
-	@staticmethod
-	def unpack(array: list) -> str:
-		cell_data = ""
-		for stem in array:
-			cell_data += f"{stem}\n"
-		return cell_data.rstrip()
+		for word in data:
+			parsed = WordParser(word)
+			self._data['content'][0].append(parsed.word)
+			self._data['content'][1].append(unpack(parsed.syllables))
+			self._data['content'][2].append(unpack(parsed.stems))
 
 	def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: int = ...):
 		if orientation == QtCore.Qt.Orientation.Horizontal and role == QtCore.Qt.ItemDataRole.DisplayRole:
@@ -55,12 +55,12 @@ class TableModel(QtCore.QAbstractTableModel):
 
 	def data(self, index, role):
 		if role == Qt.ItemDataRole.DisplayRole:
-			return self._data['content'][index.row()][index.column()]
+			return self._data['content'][index.column()][index.row()]
 		elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
 			return Qt.AlignmentFlag.AlignCenter
 
 	def rowCount(self, index):
-		return len(self._data['content'])
+		return len(self._data['content'][0])
 
 	def columnCount(self, index):
 		return len(self._data['headers'])

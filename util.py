@@ -6,15 +6,20 @@ CONSONANTS = r'([^aeiou]+)'
 CLUSTERS = r'([qwrtypsdfghjklzxcvbnm]{1,4})'
 DOUBLES = r'(\w)\1'
 
-def syllabise(word: str) -> list:
-    hyphenated = dic.inserted(word)
-    return hyphenated.split('-')
+class WordParser:
 
-def get_stem(word: str):
-    stems = []
-    syllabised = syllabise(word.lower())
-    for syllable in syllabised:
-        consonants = ''.join(re.findall(CONSONANTS, syllable))
-        stems += re.findall(CLUSTERS, consonants)
-        print("\n")
-    return stems
+    def __init__(self, word):
+
+        def get_syllables() -> list:
+            return dic.inserted(self.word.lower().replace('-', '')).split('-')
+
+        def get_stems():
+            stems = []
+            for syllable in self.syllables:
+                consonants = ''.join(re.findall(CONSONANTS, syllable))
+                stems += re.findall(CLUSTERS, consonants)
+            return stems
+
+        self.word = word
+        self.syllables = get_syllables()
+        self.stems = get_stems()
